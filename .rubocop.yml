@@ -4,3 +4,6 @@ inherit_from:
 
 Style/FrozenStringLiteralComment:
   Enabled: true
+
+Rails:
+  Enabled: false

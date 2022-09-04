@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "./value_type_guesser"
-
 module InferModel
   class CommonTypeGuesser
     extend Callable
@@ -10,10 +8,11 @@ module InferModel
     param :inputs
     option :available_types, default: -> { ValueTypeGuesser::RESULT_TYPES }
     option :multi, default: -> { false }
+    option :allow_blank, default: -> { true }
 
     def call
       inputs.each do |input|
-        @available_types = ValueTypeGuesser.new(input, available_types:, multi: true).call
+        @available_types = ValueTypeGuesser.call(input, allow_blank:, available_types:, multi: true)
       end
       multi ? available_types : available_types.first
     end

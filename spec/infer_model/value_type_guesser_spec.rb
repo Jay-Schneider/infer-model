@@ -41,7 +41,7 @@ RSpec.describe InferModel::ValueTypeGuesser do
       end
 
       context "when available_types are restricted" do
-        available_types = %i[decimal integer boolean string]
+        available_types = %i[decimal integer boolean]
         input_expected_output_matrix = {
           "12.5" => :decimal,
           "1234.5" => :decimal,
@@ -49,24 +49,24 @@ RSpec.describe InferModel::ValueTypeGuesser do
           "FALSE" => :boolean,
           "true" => :boolean,
           "F" => :boolean,
-          "12,5" => :string, # care when processing localized data
-          "2011-12-28" => :string,
-          "2011-12-28T" => :string,
-          "2011-12-28T00:05:12" => :string,
-          "2011-12-28T00:05:12+0200" => :string,
-          "2011-12-28T00:05:12+02:00" => :string,
-          "24.08.2015 00:05" => :string,
-          "24.08.2015 00:05:12" => :string,
-          "24.08.2015 00:05:12+0200" => :string,
-          "24.08.2015 00:05:12+02:00" => :string,
-          "07:28:45" => :string,
-          "07:28" => :string,
-          '{"foo": "bar", "baz": 23}' => :string,
-          '"I am a string with double quotes, hence valid JSON"' => :string,
+          "12,5" => nil, # care when processing localized data
+          "2011-12-28" => nil,
+          "2011-12-28T" => nil,
+          "2011-12-28T00:05:12" => nil,
+          "2011-12-28T00:05:12+0200" => nil,
+          "2011-12-28T00:05:12+02:00" => nil,
+          "24.08.2015 00:05" => nil,
+          "24.08.2015 00:05:12" => nil,
+          "24.08.2015 00:05:12+0200" => nil,
+          "24.08.2015 00:05:12+02:00" => nil,
+          "07:28:45" => nil,
+          "07:28" => nil,
+          '{"foo": "bar", "baz": 23}' => nil,
+          '"I am a string with double quotes, hence valid JSON"' => nil,
           "123" => :integer,
           "123_456" => :integer,
-          "ccec0361-3d68-4db8-95ce-b5bf4f6d3924" => :string,
-          "foo" => :string,
+          "ccec0361-3d68-4db8-95ce-b5bf4f6d3924" => nil,
+          "foo" => nil,
         }
 
         input_expected_output_matrix.each do |input, expected_output|

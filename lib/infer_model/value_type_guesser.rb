@@ -3,7 +3,6 @@
 require "date"
 require "json"
 require "time"
-require_relative "./callable"
 
 module InferModel
   class ValueTypeGuesser
@@ -13,6 +12,7 @@ module InferModel
     param :input
     option :available_types, default: -> { RESULT_TYPES }
     option :multi, default: -> { false }
+    option :allow_blank, default: -> { true }
 
     INTEGER_RESULT = :integer # bigint included
     DECIMAL_RESULT = :decimal # float included
@@ -34,6 +34,7 @@ module InferModel
     ].freeze
 
     def call
+      raise Error, "Provide strings only for guessing the type" unless input.is_a?(String) || input.nil?
       if multi
         ordered_available_known_types.filter { |type| may_be?(type) }
       else
@@ -51,9 +52,14 @@ module InferModel
       @inferred_type ||= ordered_available_known_types.each do |type|
         return type if may_be?(type)
       end
+      nil
     end
 
-    def may_be?(type) = send("may_be_#{type}?")
+    def may_be?(type)
+      return allow_blank if input.nil? || input.empty?
+
+      send("may_be_#{type}?")
+    end
 
     def may_be_integer?
       Integer(input, 10)
@@ -99,7 +105,7 @@ module InferModel
       "%Y-%m-%d", "%Y-%m-%dT",
       "%d.%m.%Y", "%d.%m.%Y %H:%M",
       "%d.%m.%Y %T", "%d.%m.%Y %T%z", "%d.%m.%Y %T%Z",
-      "%Y-%m-%dT%T%z", "%Y-%m-%dT%T%Z",
+      "%Y-%m-%dT%T%z", "%Y-%m-%dT%T%Z", "%Y-%m-%dT%TZ",
     ].freeze
 
     def may_be_datetime?
