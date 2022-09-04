@@ -1,3 +1,6 @@
 <% require "dotenv/load" %>
 inherit_from:
   - <%= "https://#{ENV["CODE_STYLE_SECRET"]}@raw.githubusercontent.com/zweitag/code-style/main/rubocop/.rubocop.yml" %>
+
+Style/FrozenStringLiteralComment:
+  Enabled: true

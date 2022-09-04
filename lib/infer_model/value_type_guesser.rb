@@ -22,7 +22,7 @@ module InferModel
     JSON_RESULT = :json
     UUID_RESULT = :uuid
     STRING_RESULT = :string # text included
-    RESULT_TYPES = [ # ordered by specifity (string should come last etc)
+    RESULT_TYPES = [ # ordered by specifity (string should come last, integer before decimal etc.)
       INTEGER_RESULT,
       DECIMAL_RESULT,
       BOOLEAN_RESULT,
@@ -86,6 +86,7 @@ module InferModel
     end
 
     ACCEPTABLE_TIME_FORMATS = %w[%T %R].freeze
+
     def may_be_time?
       ACCEPTABLE_TIME_FORMATS.any? do |format|
         Time.strptime(input, format)
