@@ -1,0 +1,28 @@
+*.rbc
+capybara-*.html
+.rspec
+/coverage/
+/spec/tmp
+/spec/examples.txt
+**.orig
+rerun.txt
+
+## Environment normalisation:
+/.bundle
+/vendor/bundle
+/.env.development.local
+/.env.test.local
+/.env.local
+
+# these should all be checked in to normalise the environment:
+# Gemfile.lock, .ruby-version, .ruby-gemset, .tool-versions
+
+# Ignore cached rubocop files
+.rubocop-http*
+
+# Ignore all logfiles and tempfiles.
+/log/*
+!/log/.keep
+/tmp
+!/tmp/.keep
+!/tmp/pids/.keep
