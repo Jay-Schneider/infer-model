@@ -6,6 +6,8 @@ source "https://rubygems.org"
 gemspec
 
 gem "dotenv"
+gem "dry-initializer"
+gem "pry"
 gem "rake"
 gem "rspec"
 gem "rubocop"
