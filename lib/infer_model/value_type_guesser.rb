@@ -11,6 +11,8 @@ module InferModel
     extend Dry::Initializer
 
     param :input
+    option :available_types, default: -> { RESULT_TYPES }
+    option :multi, default: -> { false }
 
     INTEGER_RESULT = :integer # bigint included
     DECIMAL_RESULT = :decimal # float included
@@ -32,13 +34,21 @@ module InferModel
     ].freeze
 
     def call
-      inferred_type
+      if multi
+        ordered_available_known_types.filter { |type| may_be?(type) }
+      else
+        inferred_type
+      end
     end
 
     private
 
+    def ordered_available_known_types
+      RESULT_TYPES & available_types
+    end
+
     def inferred_type
-      @inferred_type ||= RESULT_TYPES.each do |type|
+      @inferred_type ||= ordered_available_known_types.each do |type|
         return type if may_be?(type)
       end
     end
