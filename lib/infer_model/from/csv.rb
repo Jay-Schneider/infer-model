@@ -13,6 +13,14 @@ module InferModel::From
     option :csv_options, default: -> { { col_sep: ",", encoding: "utf-8", headers: true, quote_char: "\x00" } }
 
     def call
+      { source_name:, attributes: }
+    end
+
+    private
+
+    def source_name = File.basename(filename, File.extname(filename))
+
+    def attributes
       csv.by_col!.to_h do |header, contents|
         [
           header.downcase.to_sym,
@@ -20,8 +28,6 @@ module InferModel::From
         ]
       end
     end
-
-    private
 
     def csv = ::CSV.parse(file_content, **csv_options)
 

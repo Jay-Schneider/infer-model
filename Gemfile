@@ -5,6 +5,7 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in infer_model.gemspec
 gemspec
 
+gem "activesupport"
 gem "dotenv"
 gem "dry-initializer"
 gem "pry"

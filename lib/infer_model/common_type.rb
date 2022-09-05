@@ -8,9 +8,13 @@ module InferModel
     option :unique_constraint_possible, optional: true
     option :non_null_constraint_possible, optional: true
 
+    def detected_type
+      possible_detected_types.respond_to?(:first) ? possible_detected_types.first : possible_detected_types
+    end
+
     def ==(other)
       return possible_detected_types == other if other.is_a?(Symbol)
-      return possible_detected_types == other if other.respond_to?(:all?) && other.all? { |o| o.is_a?(Symbol) }
+      return possible_detected_types == other if other.respond_to?(:all?) && other.all?(Symbol)
 
       super(other)
     end

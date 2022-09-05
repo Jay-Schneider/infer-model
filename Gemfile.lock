@@ -74,6 +74,7 @@ PLATFORMS
   arm64-darwin-21
 
 DEPENDENCIES
+  activesupport
   dotenv
   dry-initializer
   infer_model!

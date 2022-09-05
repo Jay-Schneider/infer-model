@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "infer_model"
+require "active_support/testing/time_helpers"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
