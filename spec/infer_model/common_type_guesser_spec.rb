@@ -75,6 +75,30 @@ RSpec.describe InferModel::CommonTypeGuesser do
           end
         end
       end
+
+      context "when constraint detection is enabled" do
+        subject { described_class.call(inputs, detect_uniqueness: true, detect_non_null: true) }
+
+        context "when inputs are unique and not empty" do
+          let(:inputs) { %w[12 23 34 45 56 67] }
+          it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: true, non_null_constraint_possible: true) }
+        end
+
+        context "when inputs are unique but include empty ones" do
+          let(:inputs) { ["12", "23", "34", "", "56", "67"] }
+          it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: true, non_null_constraint_possible: false) }
+        end
+
+        context "when inputs are not unique but not empty" do
+          let(:inputs) { %w[12 23 34 45 56 34 67] }
+          it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: false, non_null_constraint_possible: true) }
+        end
+
+        context "when inputs are not unique and include empty ones" do
+          let(:inputs) { ["12", "23", "34", "", "56", "34", "67"] }
+          it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: false, non_null_constraint_possible: false) }
+        end
+      end
     end
 
     context "in multi mode" do
@@ -121,6 +145,30 @@ RSpec.describe InferModel::CommonTypeGuesser do
 
             it { is_expected.to eq(expected_output & available_types) }
           end
+        end
+      end
+
+      context "when constraint detection is enabled" do
+        subject { described_class.call(inputs, multi: true, detect_uniqueness: true, detect_non_null: true) }
+
+        context "when inputs are unique and not empty" do
+          let(:inputs) { %w[12 23 34 45 56 67] }
+          it { is_expected.to have_attributes(possible_detected_types: %i[integer decimal json string], unique_constraint_possible: true, non_null_constraint_possible: true) }
+        end
+
+        context "when inputs are unique but include empty ones" do
+          let(:inputs) { ["12", "23", "34", "", "56", "67"] }
+          it { is_expected.to have_attributes(possible_detected_types: %i[integer decimal json string], unique_constraint_possible: true, non_null_constraint_possible: false) }
+        end
+
+        context "when inputs are not unique but not empty" do
+          let(:inputs) { %w[12 23 34 45 56 34 67] }
+          it { is_expected.to have_attributes(possible_detected_types: %i[integer decimal json string], unique_constraint_possible: false, non_null_constraint_possible: true) }
+        end
+
+        context "when inputs are not unique and include empty ones" do
+          let(:inputs) { ["12", "23", "34", "", "56", "34", "67"] }
+          it { is_expected.to have_attributes(possible_detected_types: %i[integer decimal json string], unique_constraint_possible: false, non_null_constraint_possible: false) }
         end
       end
     end
