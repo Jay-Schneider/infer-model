@@ -5,12 +5,4 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in infer_model.gemspec
 gemspec
 
-gem "activesupport"
-gem "dotenv"
-gem "dry-initializer"
-gem "pry"
 gem "rake"
-gem "rspec"
-gem "rubocop"
-gem "rubocop-performance"
-gem "rubocop-rails"
