@@ -32,7 +32,9 @@ RSpec.describe InferModel::To::Migration do
     it "creates a migration file" do
       expect { call }.to change { File.exist?(expected_filename) }.from(false).to(true)
       expect(File.read(expected_filename)).to eq(<<~RUBY)
-        class CreateHappyPath < ActiveRecord::Migration[7.0]
+        # frozen_string_literal: true
+
+        class CreateHappyPaths < ActiveRecord::Migration[7.0]
           def change
             create_table "happy_paths" do |t|
               t.integer "integer_col"
@@ -71,7 +73,9 @@ RSpec.describe InferModel::To::Migration do
       it "creates a migration file" do
         expect { call }.to change { File.exist?(expected_filename) }.from(false).to(true)
         expect(File.read(expected_filename)).to eq(<<~RUBY)
-          class CreateHappyPath < ActiveRecord::Migration[7.0]
+          # frozen_string_literal: true
+
+          class CreateHappyPaths < ActiveRecord::Migration[7.0]
             def change
               create_table "happy_paths" do |t|
                 t.integer "integer_col", null: false

@@ -8,14 +8,17 @@ RSpec.describe InferModel::From::CSV do
 
     it "detects the types from the happy path fixture" do
       expect(result).to eq({
-        integer_col: :integer,
-        decimal_col: :decimal,
-        datetime_col: :datetime,
-        time_col: :time,
-        boolean_col: :boolean,
-        json_col: :json,
-        uuid_col: :uuid,
-        string_col: :string,
+        source_name: "happy_path",
+        attributes: {
+          integer_col: :integer,
+          decimal_col: :decimal,
+          datetime_col: :datetime,
+          time_col: :time,
+          boolean_col: :boolean,
+          json_col: :json,
+          uuid_col: :uuid,
+          string_col: :string,
+        },
       })
     end
 
@@ -25,14 +28,17 @@ RSpec.describe InferModel::From::CSV do
 
       it "detects the types from the happy path fixture" do
         expect(result).to eq({
-          integer_col: :decimal,
-          decimal_col: :decimal,
-          datetime_col: :datetime,
-          time_col: :string,
-          boolean_col: :boolean,
-          json_col: :string,
-          uuid_col: :string,
-          string_col: :string,
+          source_name: "happy_path",
+          attributes: {
+            integer_col: :decimal,
+            decimal_col: :decimal,
+            datetime_col: :datetime,
+            time_col: :string,
+            boolean_col: :boolean,
+            json_col: :string,
+            uuid_col: :string,
+            string_col: :string,
+          },
         })
       end
     end

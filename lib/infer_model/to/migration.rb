@@ -32,7 +32,9 @@ module InferModel::To
 
     def migration_content
       <<~RUBY
-        class Create#{given_or_inferred_tablename.classify} < ActiveRecord::Migration[#{rails_version}]
+        # frozen_string_literal: true
+
+        class Create#{given_or_inferred_tablename.camelize} < ActiveRecord::Migration[#{rails_version}]
           def change
             create_table "#{given_or_inferred_tablename}" do |t|
               #{column_ddl_lines}
@@ -44,7 +46,7 @@ module InferModel::To
       RUBY
     end
 
-    COLUMN_DDL_LINES_WITH_INDENTATION_JOINER = "\n#{"  " * 3}"
+    COLUMN_DDL_LINES_WITH_INDENTATION_JOINER = "\n#{"  " * 3}".freeze
 
     def column_ddl_lines
       column_definitions = inferred_data[:attributes].map do |key, common_type|
