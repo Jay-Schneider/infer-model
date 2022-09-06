@@ -1,8 +1,20 @@
+[![Continuous Integration](https://github.com/Jay-Schneider/infer_model/actions/workflows/ci.yml/badge.svg)](https://github.com/Jay-Schneider/infer_model/actions/workflows/ci.yml)
+
 # InferModel
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/infer_model`. To experiment with that code, run `bin/console` for an interactive prompt.
+Infer a model from data.
 
-TODO: Delete this and the text above, and describe your gem
+This gem transforms data dumps into managable structures.
+
+You can use it to deduce certain properties from a given set of data to use it to build a database around this data.
+
+The main use case is:
+Given a csv file that was exported from some tool, you want to manage and process the contained data in a database, say in your rails application.
+It would be valid to create a string column for every CSV column and import the data as is but you lose a lot of information by doing so.
+
+Instead what this tool allows you to do is to guess which data type, like integer, decimal, boolean, etc, is the best fit for each column and allows you to create migrations or scripts to do so almost automatically.
+
+Additionally the values may be parsed to deduce further features of your data that may be useful when setting up a database, like uniqueness or non-null constraints.
 
 ## Installation
 
@@ -16,7 +28,19 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+A CLI is yet to be written. But you may run the tool from inside your code or an interactive session like so:
+
+```ruby
+require "infer_model"
+
+# Just display the results in a human readable format
+InferModel.from(:csv, "path/to/file.csv").to(:text).call
+
+# Create a rails migration for me with the inferred information
+InferModel.from(:csv, "path/to/file.csv", csv_options: { col_sep: ";", encoding: "csp1252" }).to(:migration, rails_version: "6.0", table_name: "csv_contents").call
+```
+
+More "Adapters" that can be used as `from` source or `to` target may be added in the future. If you have ideas or needs please contribute by creating an issue or pr.
 
 ## Development
 

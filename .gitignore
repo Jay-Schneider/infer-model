@@ -2,11 +2,12 @@
 capybara-*.html
 .rspec
 .rspec_status
-/coverage/
+e/
 /spec/tmp
 /spec/examples.txt
 **.orig
 rerun.txt
+pkg/
 
 ## Environment normalisation:
 /.bundle
