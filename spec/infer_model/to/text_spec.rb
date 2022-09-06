@@ -4,8 +4,8 @@ require "spec_helper"
 
 RSpec.describe InferModel::To::Text do
   describe "#call" do
-    let(:inferred_data) do
-      {
+    let(:model) do
+      InferModel::Model.new(
         source_name: "foo_bars",
         attributes: {
           integer_col: InferModel::CommonType.new(:integer, unique_constraint_possible: true, non_null_constraint_possible: true),
@@ -13,7 +13,7 @@ RSpec.describe InferModel::To::Text do
           boolean_col: InferModel::CommonType.new(:boolean, non_null_constraint_possible: true),
           uuid_col: InferModel::CommonType.new(:uuid, unique_constraint_possible: true),
         },
-      }
+      )
     end
 
     let(:expected_text) do
@@ -43,7 +43,7 @@ RSpec.describe InferModel::To::Text do
     end
 
     context "without a file" do
-      subject(:call) { described_class.call(inferred_data, outstream:) }
+      subject(:call) { described_class.call(model, outstream:) }
       let(:outstream) { StringIO.new }
       let(:output) { outstream.tap(&:rewind).read }
 
@@ -58,7 +58,7 @@ RSpec.describe InferModel::To::Text do
         FileUtils.rm_f(target_filename)
         FileUtils.mkdir_p(File.dirname(target_filename))
       end
-      subject(:call) { File.open(target_filename, "w") { |file| described_class.call(inferred_data, outstream: file) } }
+      subject(:call) { File.open(target_filename, "w") { |file| described_class.call(model, outstream: file) } }
       let(:target_filename) { "tmp/spec/foo_bars.txt" }
 
       it "writes the text into the file" do

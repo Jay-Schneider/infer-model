@@ -7,19 +7,20 @@ RSpec.describe InferModel::From::CSV do
     subject(:result) { described_class.call("spec/fixtures/csv/happy_path.csv") }
 
     it "detects the types from the happy path fixture" do
-      expect(result).to eq({
+      expect(result).to have_attributes(
+        class: InferModel::Model,
         source_name: "happy_path",
         attributes: {
-          integer_col: :integer,
-          decimal_col: :decimal,
-          datetime_col: :datetime,
-          time_col: :time,
-          boolean_col: :boolean,
-          json_col: :json,
-          uuid_col: :uuid,
-          string_col: :string,
+          integer_col: an_object_having_attributes(detected_type: :integer),
+          decimal_col: an_object_having_attributes(detected_type: :decimal),
+          datetime_col: an_object_having_attributes(detected_type: :datetime),
+          time_col: an_object_having_attributes(detected_type: :time),
+          boolean_col: an_object_having_attributes(detected_type: :boolean),
+          json_col: an_object_having_attributes(detected_type: :json),
+          uuid_col: an_object_having_attributes(detected_type: :uuid),
+          string_col: an_object_having_attributes(detected_type: :string),
         },
-      })
+      )
     end
 
     context "when available_types are restricted" do
@@ -27,19 +28,20 @@ RSpec.describe InferModel::From::CSV do
       subject(:result) { described_class.call("spec/fixtures/csv/happy_path.csv", available_types:) }
 
       it "detects the types from the happy path fixture" do
-        expect(result).to eq({
+        expect(result).to have_attributes(
+          class: InferModel::Model,
           source_name: "happy_path",
           attributes: {
-            integer_col: :decimal,
-            decimal_col: :decimal,
-            datetime_col: :datetime,
-            time_col: :string,
-            boolean_col: :boolean,
-            json_col: :string,
-            uuid_col: :string,
-            string_col: :string,
+            integer_col: an_object_having_attributes(detected_type: :decimal),
+            decimal_col: an_object_having_attributes(detected_type: :decimal),
+            datetime_col: an_object_having_attributes(detected_type: :datetime),
+            time_col: an_object_having_attributes(detected_type: :string),
+            boolean_col: an_object_having_attributes(detected_type: :boolean),
+            json_col: an_object_having_attributes(detected_type: :string),
+            uuid_col: an_object_having_attributes(detected_type: :string),
+            string_col: an_object_having_attributes(detected_type: :string),
           },
-        })
+        )
       end
     end
   end

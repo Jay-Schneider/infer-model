@@ -12,9 +12,9 @@ RSpec.describe InferModel::To::Migration do
   let(:expected_filename) { File.join(target_dir, "20221102110211_create_happy_paths.rb") }
 
   describe "#call" do
-    subject(:call) { described_class.call(inferred_data, target_dir:) }
-    let(:inferred_data) do
-      {
+    subject(:call) { described_class.call(model, target_dir:) }
+    let(:model) do
+      InferModel::Model.new(
         source_name: "happy_path",
         attributes: {
           integer_col: InferModel::CommonType.new(:integer),
@@ -26,7 +26,7 @@ RSpec.describe InferModel::To::Migration do
           uuid_col: InferModel::CommonType.new(:uuid),
           string_col: InferModel::CommonType.new(:string),
         },
-      }
+      )
     end
 
     it "creates a migration file" do
@@ -54,8 +54,8 @@ RSpec.describe InferModel::To::Migration do
     end
 
     context "with detailed constraint information" do
-      let(:inferred_data) do
-        {
+      let(:model) do
+        InferModel::Model.new(
           source_name: "happy_path",
           attributes: {
             integer_col: InferModel::CommonType.new(:integer, unique_constraint_possible: true, non_null_constraint_possible: true),
@@ -67,7 +67,7 @@ RSpec.describe InferModel::To::Migration do
             uuid_col: InferModel::CommonType.new(:uuid, unique_constraint_possible: true),
             string_col: InferModel::CommonType.new(:string),
           },
-        }
+        )
       end
 
       it "creates a migration file" do

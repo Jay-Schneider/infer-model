@@ -19,6 +19,7 @@ require_relative "infer_model/to/migration"
 require_relative "infer_model/to/text"
 
 # main classes
+require_relative "infer_model/model"
 require_relative "infer_model/task"
 require_relative "infer_model/version"
 

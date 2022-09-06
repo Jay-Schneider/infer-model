@@ -5,7 +5,7 @@ module InferModel::To
     extend Dry::Initializer
     extend InferModel::Callable
 
-    param :inferred_data
+    param :model
     option :outstream, default: -> { $stdout }
 
     def call
@@ -18,7 +18,7 @@ module InferModel::To
     private
 
     def title
-      source_name_line = "Source Name: '#{inferred_data[:source_name]}'"
+      source_name_line = "Source Name: '#{model.source_name}'"
       <<~TEXT
         #{source_name_line}
         #{"#" * source_name_line.size}
@@ -29,7 +29,7 @@ module InferModel::To
     end
 
     def formatted_attributes
-      inferred_data[:attributes].map do |attr_name, common_type|
+      model.attributes.map do |attr_name, common_type|
         formatted_attribute(attr_name, common_type)
       end
     end

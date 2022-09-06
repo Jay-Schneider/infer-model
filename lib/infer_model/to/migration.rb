@@ -9,7 +9,7 @@ module InferModel::To
 
     TIMESTAMP_FORMAT = "%Y%m%d%H%M%S"
 
-    param :inferred_data
+    param :model
     option :target_dir, default: -> { "db/migrate" }
     option :table_name, optional: true
     option :rails_version, default: -> { "7.0" }
@@ -27,7 +27,7 @@ module InferModel::To
     end
 
     def given_or_inferred_tablename
-      table_name || inferred_data[:source_name].pluralize
+      table_name || model.source_name.pluralize
     end
 
     def migration_content
@@ -49,13 +49,13 @@ module InferModel::To
     COLUMN_DDL_LINES_WITH_INDENTATION_JOINER = "\n#{"  " * 3}".freeze
 
     def column_ddl_lines
-      column_definitions = inferred_data[:attributes].map do |key, common_type|
+      column_definitions = model.attributes.map do |key, common_type|
         attribute_and_name = %(t.#{common_type.detected_type} "#{key}")
         non_null_constraint = common_type.non_null_constraint_possible ? "null: false" : nil
 
         [attribute_and_name, non_null_constraint].compact.join(", ")
       end
-      index_definitions = inferred_data[:attributes].filter_map do |key, common_type|
+      index_definitions = model.attributes.filter_map do |key, common_type|
         next unless common_type.unique_constraint_possible
 
         %(t.index ["#{key}"], unique: true)

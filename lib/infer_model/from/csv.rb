@@ -16,7 +16,7 @@ module InferModel::From
     option :csv_options, default: -> { {} }
 
     def call
-      { source_name:, attributes: }
+      ::InferModel::Model.new(source_name:, attributes:)
     end
 
     private
