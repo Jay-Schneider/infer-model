@@ -3,7 +3,10 @@
 module InferModel
   class Task
     FROMS = { csv: ::InferModel::From::CSV }.freeze
-    TOS = { migration: ::InferModel::To::Migration }.freeze
+    TOS = {
+      migration: ::InferModel::To::Migration,
+      text: ::InferModel::To::Text,
+    }.freeze
 
     attr_reader :from_object, :from_args, :from_opts, :to_object, :to_args, :to_opts
 
