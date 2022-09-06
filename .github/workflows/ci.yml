@@ -1,0 +1,46 @@
+---
+name: Continuous Integration
+on:
+  push:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  rspec:
+    name: RSpec
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rspec
+
+  rubocop:
+    name: Rubocop
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+      - run: gem install rubocop rubocop-performance
+      - run: rubocop -P
+
+  bundle_audit:
+    name: Bundle Audit
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+      - run: gem install bundler-audit
+      - run: bundle audit check --update
+
+  ruby_audit:
+    name: Ruby Audit
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+      - run: gem install ruby_audit
+      - run: bin/ruby-audit
