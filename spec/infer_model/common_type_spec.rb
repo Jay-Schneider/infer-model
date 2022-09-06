@@ -3,66 +3,22 @@
 require "spec_helper"
 
 RSpec.describe InferModel::CommonType do
-  describe "#==" do
-    context "for one type" do
-      subject { described_class.new(:decimal) }
+  describe "#detected_type" do
+    subject(:detected_type) { common_type.detected_type }
 
-      it { is_expected.to eq(:decimal) }
-    end
+    context "when it has one" do
+      let(:common_type) { InferModel::CommonType.new(:decimal) }
 
-    context "for multiple types" do
-      subject { described_class.new(%i[decimal datetime uuid]) }
-
-      it { is_expected.to eq(%i[decimal datetime uuid]) }
-    end
-  end
-
-  describe "#inspect" do
-    context "for one type" do
-      subject { described_class.new(:decimal).inspect }
-
-      it { is_expected.to eq("<InferModel::CommonType: decimal>") }
-
-      context "with unique_constraint_possible" do
-        subject { described_class.new(:decimal, unique_constraint_possible: true).inspect }
-
-        it { is_expected.to eq("<InferModel::CommonType: decimal, only unique values>") }
-      end
-
-      context "with non_null_constraint_possible" do
-        subject { described_class.new(:decimal, non_null_constraint_possible: true).inspect }
-
-        it { is_expected.to eq("<InferModel::CommonType: decimal, no empty values>") }
-      end
-
-      context "with unique_constraint_possible & non_null_constraint_possible" do
-        subject { described_class.new(:decimal, unique_constraint_possible: true, non_null_constraint_possible: true).inspect }
-
-        it { is_expected.to eq("<InferModel::CommonType: decimal, only unique values, no empty values>") }
+      it "returns it" do
+        expect(detected_type).to eq(:decimal)
       end
     end
 
-    context "for multiple types" do
-      subject { described_class.new(%i[decimal datetime uuid]).inspect }
+    context "when it has multiple" do
+      let(:common_type) { InferModel::CommonType.new(%i[integer decimal]) }
 
-      it { is_expected.to eq("<InferModel::CommonType: [:decimal, :datetime, :uuid]>") }
-
-      context "with unique_constraint_possible" do
-        subject { described_class.new(%i[decimal datetime uuid], unique_constraint_possible: true).inspect }
-
-        it { is_expected.to eq("<InferModel::CommonType: [:decimal, :datetime, :uuid], only unique values>") }
-      end
-
-      context "with non_null_constraint_possible" do
-        subject { described_class.new(%i[decimal datetime uuid], non_null_constraint_possible: true).inspect }
-
-        it { is_expected.to eq("<InferModel::CommonType: [:decimal, :datetime, :uuid], no empty values>") }
-      end
-
-      context "with unique_constraint_possible & non_null_constraint_possible" do
-        subject { described_class.new(%i[decimal datetime uuid], unique_constraint_possible: true, non_null_constraint_possible: true).inspect }
-
-        it { is_expected.to eq("<InferModel::CommonType: [:decimal, :datetime, :uuid], only unique values, no empty values>") }
+      it "returns the first one" do
+        expect(detected_type).to eq(:integer)
       end
     end
   end
