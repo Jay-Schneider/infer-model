@@ -9,8 +9,8 @@ module InferModel
     option :available_types, default: -> { ValueTypeGuesser::RESULT_TYPES }
     option :multi, default: -> { false }
     option :allow_blank, default: -> { true }
-    option :detect_uniqueness, default: -> { false }
-    option :detect_non_null, default: -> { false }
+    option :detect_uniqueness, default: -> { true }
+    option :detect_non_null, default: -> { true }
 
     def call
       inputs.each do |input|

@@ -83,16 +83,17 @@ module InferModel
       may_be_true? || may_be_false?
     end
 
+    TRUTHY_VALUES_LOWERCASE = %w[true t x y j + *].freeze
     def may_be_true?
-      input.casecmp("true") * input.casecmp("t") * input.casecmp("x") == 0
+      TRUTHY_VALUES_LOWERCASE.any? { |truth| input.casecmp(truth).zero? }
     end
 
+    FALSEY_VALUES_LOWERCASE = %w[false f n].freeze
     def may_be_false?
-      input.casecmp("false") * input.casecmp("f") == 0
+      input.empty? || FALSEY_VALUES_LOWERCASE.any? { |lie| input.casecmp(lie).zero? }
     end
 
     ACCEPTABLE_TIME_FORMATS = %w[%T %R].freeze
-
     def may_be_time?
       ACCEPTABLE_TIME_FORMATS.any? do |format|
         Time.strptime(input, format)
@@ -107,7 +108,6 @@ module InferModel
       "%d.%m.%Y %T", "%d.%m.%Y %T%z", "%d.%m.%Y %T%Z",
       "%Y-%m-%dT%T%z", "%Y-%m-%dT%T%Z", "%Y-%m-%dT%TZ",
     ].freeze
-
     def may_be_datetime?
       ACCEPTABLE_DATETIME_FORMATS.any? do |format|
         DateTime.strptime(input, format)
@@ -123,7 +123,6 @@ module InferModel
     end
 
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-
     def may_be_uuid?
       UUID_REGEX.match?(input)
     end
