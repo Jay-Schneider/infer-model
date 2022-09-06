@@ -6,7 +6,7 @@ RSpec.describe InferModel::To::Migration do
   include ActiveSupport::Testing::TimeHelpers
 
   around { |ex| travel_to(Time.new(2022, 11, 2, 11, 2, 11)) { ex.run } }
-  before { FileUtils.remove_dir(target_dir) if File.exists?(target_dir) }
+  before { FileUtils.rm_rf(target_dir) }
 
   let(:target_dir) { "tmp/spec/db/migrate" }
   let(:expected_filename) { File.join(target_dir, "20221102110211_create_happy_paths.rb") }

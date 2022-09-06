@@ -6,7 +6,7 @@ module InferModel::To
     extend InferModel::Callable
 
     param :inferred_data
-    option :outstream, default: -> { STDOUT }
+    option :outstream, default: -> { $stdout }
 
     def call
       outstream << <<~TEXT

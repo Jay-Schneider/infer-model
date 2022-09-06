@@ -55,14 +55,14 @@ RSpec.describe InferModel::To::Text do
 
     context "with a file" do
       before do
-        FileUtils.remove(target_filename) if File.exists?(target_filename)
+        FileUtils.rm_f(target_filename)
         FileUtils.mkdir_p(File.dirname(target_filename))
       end
       subject(:call) { File.open(target_filename, "w") { |file| described_class.call(inferred_data, outstream: file) } }
-      let(:target_filename) { "tmp/spec/foo_bars.txt"}
+      let(:target_filename) { "tmp/spec/foo_bars.txt" }
 
       it "writes the text into the file" do
-        expect { call }.to change { File.exists?(target_filename) }.from(false).to(true)
+        expect { call }.to change { File.exist?(target_filename) }.from(false).to(true)
         expect(File.read(target_filename)).to eq(expected_text)
       end
     end

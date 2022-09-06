@@ -87,6 +87,7 @@ Metrics/BlockLength: # the default value of 25 is good
     - config/**/* # There is no reason to artificially break up config blocks
     - lib/tasks/**/*.rake
     - spec/**/* # describe or context blocks may be large
+    - '*.gemspec'
 
 # Method signature complexity metrics
 Metrics/ParameterLists:
