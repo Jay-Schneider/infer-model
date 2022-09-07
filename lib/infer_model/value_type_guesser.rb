@@ -44,23 +44,12 @@ module InferModel
       RESULT_TYPES & available_types
     end
 
-    PARSERS = {
-      integer: Parsers::Integer,
-      decimal: Parsers::Decimal,
-      boolean: Parsers::Boolean,
-      time: Parsers::Time,
-      datetime: Parsers::DateTime,
-      json: Parsers::JSON,
-      uuid: Parsers::UUID,
-      string: ->(*_anything) { true },
-    }.freeze
-
     def may_be?(type)
       type = type.to_s.downcase.to_sym
-      raise ArgumentError, "unknown type '#{type}'" unless PARSERS.key?(type)
+      raise ArgumentError, "unknown type '#{type}'" unless InferModel::Parsers::BY_TYPE.key?(type)
       return allow_blank if input.nil? || input.empty?
 
-      PARSERS.fetch(type).call(input) || true # false is allowed for boolean
+      InferModel::Parsers::BY_TYPE.fetch(type).call(input) || true # false is allowed for boolean
     rescue Parsers::Error
       false
     end
