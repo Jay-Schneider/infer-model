@@ -4,6 +4,7 @@ PATH
     infer_model (0.1.0)
       activesupport (~> 7.0)
       dry-initializer (~> 3.0)
+      zeitwerk (~> 2.6)
 
 GEM
   remote: https://rubygems.org/
@@ -66,6 +67,7 @@ GEM
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.2.0)
+    zeitwerk (2.6.0)
 
 PLATFORMS
   arm64-darwin-21

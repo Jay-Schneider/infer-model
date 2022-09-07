@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activesupport", "~> 7.0"
   spec.add_dependency "dry-initializer", "~> 3.0"
+  spec.add_dependency "zeitwerk", "~> 2.6"
   spec.add_development_dependency "dotenv", "~> 2.8"
   spec.add_development_dependency "pry", "~> 0.14"
   spec.add_development_dependency "rspec", "~> 3.11"
