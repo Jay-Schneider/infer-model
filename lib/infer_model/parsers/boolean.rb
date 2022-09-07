@@ -8,8 +8,8 @@ module InferModel
     param :value
     option :allow_blank, default: -> { true }
 
-    TRUTHY_VALUES_LOWERCASE = %w[true t x y j + *].freeze
-    FALSEY_VALUES_LOWERCASE = %w[false f n].freeze
+    TRUTHY_VALUES_LOWERCASE = %w[true t x y j + * 1].freeze
+    FALSEY_VALUES_LOWERCASE = %w[false f n - 0].freeze
 
     def call
       raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
