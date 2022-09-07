@@ -12,7 +12,7 @@ module InferModel
       json: JSON,
       time: Time,
       uuid: UUID,
-      string: -> { _1 },
+      string: ->(*args, **_opts) { args[0] },
     }.freeze
   end
 end

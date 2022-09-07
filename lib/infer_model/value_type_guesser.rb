@@ -47,9 +47,8 @@ module InferModel
     def may_be?(type)
       type = type.to_s.downcase.to_sym
       raise ArgumentError, "unknown type '#{type}'" unless InferModel::Parsers::BY_TYPE.key?(type)
-      return allow_blank if input.nil? || input.empty?
 
-      InferModel::Parsers::BY_TYPE.fetch(type).call(input) || true # false is allowed for boolean
+      InferModel::Parsers::BY_TYPE.fetch(type).call(input, allow_blank:) || true # false is allowed for boolean
     rescue Parsers::Error
       false
     end

@@ -21,8 +21,12 @@ module InferModel
     ].freeze
 
     param :value
+    option :allow_blank, default: -> { true }
 
     def call
+      raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
+      return if value.nil? || value.empty?
+
       ACCEPTABLE_DATETIME_FORMATS.each do |format|
         return DateTime.strptime(value, format)
       rescue Date::Error
