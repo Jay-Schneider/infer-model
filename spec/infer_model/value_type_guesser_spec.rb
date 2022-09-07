@@ -30,6 +30,8 @@ RSpec.describe InferModel::ValueTypeGuesser do
         "123_456" => :integer,
         "ccec0361-3d68-4db8-95ce-b5bf4f6d3924" => :uuid,
         "foo" => :string,
+        "" => :integer,
+        nil => :integer,
       }
 
       input_expected_output_matrix.each do |input, expected_output|
@@ -67,6 +69,8 @@ RSpec.describe InferModel::ValueTypeGuesser do
           "123_456" => :integer,
           "ccec0361-3d68-4db8-95ce-b5bf4f6d3924" => nil,
           "foo" => nil,
+          "" => :integer,
+          nil => :integer,
         }
 
         input_expected_output_matrix.each do |input, expected_output|
@@ -105,6 +109,8 @@ RSpec.describe InferModel::ValueTypeGuesser do
         "123_456" => %i[integer decimal string],
         "ccec0361-3d68-4db8-95ce-b5bf4f6d3924" => %i[uuid string],
         "foo" => %i[string],
+        "" => %i[integer decimal boolean time datetime json uuid string],
+        nil => %i[integer decimal boolean time datetime json uuid string],
       }
 
       input_expected_output_matrix.each do |input, expected_output|
@@ -129,42 +135,42 @@ RSpec.describe InferModel::ValueTypeGuesser do
     end
   end
 
-  describe "internals" do
-    subject { described_class.new(input).send(described_method) }
+  describe "may_be?" do
+    subject { described_class.new(input).send(:may_be?, described_type) }
 
     context "for 42" do
       let(:input) { "42" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -172,36 +178,36 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context "for 13.37" do
       let(:input) { "13.37" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -209,36 +215,36 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context "for FALSE" do
       let(:input) { "FALSE" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -246,36 +252,36 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context "for 07:28:23" do
       let(:input) { "07:28:23" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -283,36 +289,36 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context "for 2011-12-28" do
       let(:input) { "2011-12-28" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -320,36 +326,36 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context %(for '{"foo":"FOO", "bar":42}') do
       let(:input) { %({"foo":"FOO", "bar":42}) }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -357,36 +363,36 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context "for ccec0361-3d68-4db8-95ce-b5bf4f6d3924" do
       let(:input) { "ccec0361-3d68-4db8-95ce-b5bf4f6d3924" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_truthy }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
@@ -394,36 +400,110 @@ RSpec.describe InferModel::ValueTypeGuesser do
     context "for FooBar" do
       let(:input) { "FooBar" }
 
-      describe "#may_be_integer?" do
-        let(:described_method) { :may_be_integer? }
+      context "with type integer" do
+        let(:described_type) { :integer }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_decimal?" do
-        let(:described_method) { :may_be_decimal? }
+      context "with type decimal" do
+        let(:described_type) { :decimal }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_boolean?" do
-        let(:described_method) { :may_be_boolean? }
+      context "with type boolean" do
+        let(:described_type) { :boolean }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_time?" do
-        let(:described_method) { :may_be_time? }
+      context "with type time" do
+        let(:described_type) { :time }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_datetime?" do
-        let(:described_method) { :may_be_datetime? }
+      context "with type datetime" do
+        let(:described_type) { :datetime }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_json?" do
-        let(:described_method) { :may_be_json? }
+      context "with type json" do
+        let(:described_type) { :json }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_uuid?" do
-        let(:described_method) { :may_be_uuid? }
+      context "with type uuid" do
+        let(:described_type) { :uuid }
         it { is_expected.to be_falsey }
       end
-      describe "#may_be_string?" do
-        let(:described_method) { :may_be_string? }
+      context "with type string" do
+        let(:described_type) { :string }
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context "for empty string" do
+      let(:input) { "" }
+
+      context "with type integer" do
+        let(:described_type) { :integer }
+        it { is_expected.to be_truthy }
+      end
+      context "with type decimal" do
+        let(:described_type) { :decimal }
+        it { is_expected.to be_truthy }
+      end
+      context "with type boolean" do
+        let(:described_type) { :boolean }
+        it { is_expected.to be_truthy }
+      end
+      context "with type time" do
+        let(:described_type) { :time }
+        it { is_expected.to be_truthy }
+      end
+      context "with type datetime" do
+        let(:described_type) { :datetime }
+        it { is_expected.to be_truthy }
+      end
+      context "with type json" do
+        let(:described_type) { :json }
+        it { is_expected.to be_truthy }
+      end
+      context "with type uuid" do
+        let(:described_type) { :uuid }
+        it { is_expected.to be_truthy }
+      end
+      context "with type string" do
+        let(:described_type) { :string }
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context "for nil" do
+      let(:input) { nil }
+
+      context "with type integer" do
+        let(:described_type) { :integer }
+        it { is_expected.to be_truthy }
+      end
+      context "with type decimal" do
+        let(:described_type) { :decimal }
+        it { is_expected.to be_truthy }
+      end
+      context "with type boolean" do
+        let(:described_type) { :boolean }
+        it { is_expected.to be_truthy }
+      end
+      context "with type time" do
+        let(:described_type) { :time }
+        it { is_expected.to be_truthy }
+      end
+      context "with type datetime" do
+        let(:described_type) { :datetime }
+        it { is_expected.to be_truthy }
+      end
+      context "with type json" do
+        let(:described_type) { :json }
+        it { is_expected.to be_truthy }
+      end
+      context "with type uuid" do
+        let(:described_type) { :uuid }
+        it { is_expected.to be_truthy }
+      end
+      context "with type string" do
+        let(:described_type) { :string }
         it { is_expected.to be_truthy }
       end
     end
