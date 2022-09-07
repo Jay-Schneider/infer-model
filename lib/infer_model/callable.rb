@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-module InferModel
-  module Callable
-    def call(...)
-      new(...).call
-    end
-
-    alias call! call
-  end
+module InferModel::Callable
+  def call(...) = new(...).call
+  alias call! call
 end

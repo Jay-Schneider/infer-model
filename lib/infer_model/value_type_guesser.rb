@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "date"
-require "json"
-require "time"
-
 module InferModel
   class ValueTypeGuesser
     extend Callable
@@ -38,7 +34,7 @@ module InferModel
       if multi
         ordered_available_known_types.filter { |type| may_be?(type) }
       else
-        inferred_type
+        ordered_available_known_types.find { |type| may_be?(type) }
       end
     end
 
@@ -48,85 +44,25 @@ module InferModel
       RESULT_TYPES & available_types
     end
 
-    def inferred_type
-      @inferred_type ||= ordered_available_known_types.each do |type|
-        return type if may_be?(type)
-      end
-      nil
-    end
+    PARSERS = {
+      integer: Parsers::Integer,
+      decimal: Parsers::Decimal,
+      boolean: Parsers::Boolean,
+      time: Parsers::Time,
+      datetime: Parsers::DateTime,
+      json: Parsers::JSON,
+      uuid: Parsers::UUID,
+      string: ->(*_anything) { true },
+    }.freeze
 
     def may_be?(type)
+      type = type.to_s.downcase.to_sym
+      raise ArgumentError, "unknown type '#{type}'" unless PARSERS.key?(type)
       return allow_blank if input.nil? || input.empty?
 
-      send("may_be_#{type}?")
-    end
-
-    def may_be_integer?
-      Integer(input, 10)
-    rescue ArgumentError
+      PARSERS.fetch(type).call(input) || true # false is allowed for boolean
+    rescue Parsers::Error
       false
     end
-
-    def may_be_hex?
-      Integer(input, 16)
-    rescue ArgumentError
-      false
-    end
-
-    def may_be_decimal?
-      Float(input)
-    rescue ArgumentError
-      false
-    end
-
-    def may_be_boolean?
-      may_be_true? || may_be_false?
-    end
-
-    TRUTHY_VALUES_LOWERCASE = %w[true t x y j + *].freeze
-    def may_be_true?
-      TRUTHY_VALUES_LOWERCASE.any? { |truth| input.casecmp(truth).zero? }
-    end
-
-    FALSEY_VALUES_LOWERCASE = %w[false f n].freeze
-    def may_be_false?
-      input.empty? || FALSEY_VALUES_LOWERCASE.any? { |lie| input.casecmp(lie).zero? }
-    end
-
-    ACCEPTABLE_TIME_FORMATS = %w[%T %R].freeze
-    def may_be_time?
-      ACCEPTABLE_TIME_FORMATS.any? do |format|
-        Time.strptime(input, format)
-      rescue ArgumentError
-        false
-      end
-    end
-
-    ACCEPTABLE_DATETIME_FORMATS = [
-      "%Y-%m-%d", "%Y-%m-%dT",
-      "%d.%m.%Y", "%d.%m.%Y %H:%M",
-      "%d.%m.%Y %T", "%d.%m.%Y %T%z", "%d.%m.%Y %T%Z",
-      "%Y-%m-%dT%T%z", "%Y-%m-%dT%T%Z", "%Y-%m-%dT%TZ",
-    ].freeze
-    def may_be_datetime?
-      ACCEPTABLE_DATETIME_FORMATS.any? do |format|
-        DateTime.strptime(input, format)
-      rescue ArgumentError
-        false
-      end
-    end
-
-    def may_be_json?
-      JSON.parse(input)
-    rescue JSON::ParserError
-      false
-    end
-
-    UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-    def may_be_uuid?
-      UUID_REGEX.match?(input)
-    end
-
-    def may_be_string? = true
   end
 end
