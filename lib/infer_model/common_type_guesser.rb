@@ -17,6 +17,9 @@ module InferModel
         @available_types = ValueTypeGuesser.call(input, allow_blank:, available_types:, multi: true)
       end
       possible_detected_types = multi ? available_types : available_types.first
+
+      @parsed_inputs = inputs.map { Parsers::BY_TYPE.fetch(available_types.first).call(_1) }
+
       CommonType.new(
         possible_detected_types,
         unique_constraint_possible:,
@@ -29,13 +32,13 @@ module InferModel
     def unique_constraint_possible
       return unless detect_uniqueness
 
-      inputs.size == inputs.uniq.size
+      @parsed_inputs.size == @parsed_inputs.uniq.size
     end
 
     def non_null_constraint_possible
       return unless detect_non_null
 
-      inputs.none? { |content| content.nil? || content.empty? }
+      @parsed_inputs.none?(&:nil?)
     end
   end
 end

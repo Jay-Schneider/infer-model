@@ -85,6 +85,11 @@ RSpec.describe InferModel::CommonTypeGuesser do
             it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: true, non_null_constraint_possible: true) }
           end
 
+          context "when inputs are unique on string level but map to the same value when parsed" do
+            let(:inputs) { %w[1 01] }
+            it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: false) }
+          end
+
           context "when inputs are unique but include empty ones" do
             let(:inputs) { ["12", "23", "34", "", "56", "67"] }
             it { is_expected.to have_attributes(possible_detected_types: :integer, unique_constraint_possible: true, non_null_constraint_possible: false) }
