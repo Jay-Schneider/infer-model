@@ -28,8 +28,8 @@ module InferModel
       return if value.nil? || value.empty?
 
       ACCEPTABLE_DATETIME_FORMATS.each do |format|
-        return DateTime.strptime(value, format)
-      rescue Date::Error
+        return ::DateTime.strptime(value, format)
+      rescue ::Date::Error
         next
       end
 

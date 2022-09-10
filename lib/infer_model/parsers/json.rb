@@ -14,8 +14,8 @@ module InferModel
       raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
       return if value.nil? || value.empty?
 
-      JSON.parse(value)
-    rescue JSON::ParserError
+      ::JSON.parse(value)
+    rescue ::JSON::ParserError
       raise Parsers::Error, "'#{value}' is not a JSON"
     end
   end

@@ -17,7 +17,7 @@ module InferModel
       return if value.nil? || value.empty?
 
       ACCEPTABLE_TIME_FORMATS.each do |format|
-        return Time.strptime(value, format)
+        return ::Time.strptime(value, format)
       rescue ArgumentError
         next
       end

@@ -15,8 +15,8 @@ module InferModel
       raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
       return if value.nil?
       return false if value.empty?
-      return false if FALSEY_VALUES_LOWERCASE.any? { |lie| value.casecmp(lie).zero? }
-      return true if TRUTHY_VALUES_LOWERCASE.any? { |truth| value.casecmp(truth).zero? }
+      return false if FALSEY_VALUES_LOWERCASE.any? { |lie| lie.casecmp(value)&.zero? }
+      return true if TRUTHY_VALUES_LOWERCASE.any? { |truth| truth.casecmp(value)&.zero? }
 
       raise Parsers::Error, "'#{value}' is not a Boolean"
     end
