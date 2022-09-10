@@ -1,24 +1,16 @@
 # frozen_string_literal: true
 
 module InferModel
-  class Parsers::Boolean
-    extend Callable
-    extend Dry::Initializer
-
-    param :value
-    option :allow_blank, default: -> { true }
-
+  class Parsers::Boolean < Parsers::Parser
     TRUTHY_VALUES_LOWERCASE = %w[true t x y j + * 1].freeze
     FALSEY_VALUES_LOWERCASE = %w[false f n - 0].freeze
 
     def call
-      raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
-      return if value.nil?
-      return false if value.empty?
-      return false if FALSEY_VALUES_LOWERCASE.any? { |lie| lie.casecmp(value)&.zero? }
-      return true if TRUTHY_VALUES_LOWERCASE.any? { |truth| truth.casecmp(value)&.zero? }
+      return false if safe_value.empty?
+      return false if FALSEY_VALUES_LOWERCASE.any? { |lie| lie.casecmp(safe_value)&.zero? }
+      return true if TRUTHY_VALUES_LOWERCASE.any? { |truth| truth.casecmp(safe_value)&.zero? }
 
-      raise Parsers::Error, "'#{value}' is not a Boolean"
+      raise Parsers::Error, "'#{safe_value}' is not a Boolean"
     end
   end
 end

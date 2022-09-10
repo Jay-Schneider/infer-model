@@ -2,73 +2,52 @@ module InferModel
   module Parsers
     Error: untyped
 
-    interface _Parsing
-      def value: () -> ::String?
-      def allow_blank: () -> bool
-    end
-
     BY_TYPE: { boolean: untyped, datetime: untyped, decimal: untyped, integer: untyped, json: untyped, time: untyped, uuid: untyped, string: untyped }
 
-    class Boolean
+    class Parser
       extend InferModel::Callable
       extend Dry::Initializer
-      include _Parsing
 
+      def value: () -> ::String?
+      def allow_blank: () -> bool
+      private
+      def safe_value: () -> String
+    end
+
+    class Boolean < Parser
       TRUTHY_VALUES_LOWERCASE: ::Array[::String]
       FALSEY_VALUES_LOWERCASE: ::Array[::String]
 
       def call: () -> (nil | false | true | untyped)
     end
 
-    class DateTime
-      extend InferModel::Callable
-      extend Dry::Initializer
-      include _Parsing
-
+    class DateTime < Parser
       ACCEPTABLE_DATETIME_FORMATS: ::Array[::String]
 
       def call: () -> (nil | untyped)
     end
 
-    class Decimal
-      extend InferModel::Callable
-      extend Dry::Initializer
-      include _Parsing
+    class Decimal < Parser
+      def call: () -> untyped
+    end
+
+    class Integer < Parser
+      attr_reader base: Integer
 
       def call: () -> untyped
     end
 
-    class Integer
-      extend InferModel::Callable
-      extend Dry::Initializer
-      include _Parsing
-
+    class JSON < Parser
       def call: () -> untyped
     end
 
-    class JSON
-      extend InferModel::Callable
-      extend Dry::Initializer
-      include _Parsing
-
-      def call: () -> untyped
-    end
-
-    class Time
-      extend InferModel::Callable
-      extend Dry::Initializer
-      include _Parsing
-
+    class Time < Parser
       ACCEPTABLE_TIME_FORMATS: ::Array[::String]
 
       def call: () -> (nil | untyped)
     end
 
-    class UUID
-      extend InferModel::Callable
-      extend Dry::Initializer
-      include _Parsing
-
+    class UUID < Parser
       UUID_REGEX: ::Regexp
 
       def call: () -> (nil | untyped)

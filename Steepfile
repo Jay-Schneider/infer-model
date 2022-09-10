@@ -5,9 +5,10 @@ target :lib do
 
   check "lib/infer_model/**/*.rb"
 
-  library "date", "time" # Standard libraries
+  library "date", "json", "time" # Standard libraries
 
-  configure_code_diagnostics(D::Ruby.lenient) # `lenient` diagnostics setting
+  configure_code_diagnostics(D::Ruby.default) # `strict` diagnostics setting
+  # configure_code_diagnostics(D::Ruby.lenient) # `lenient` diagnostics setting
   # configure_code_diagnostics(D::Ruby.strict) # `strict` diagnostics setting
   # configure_code_diagnostics do |hash|             # You can setup everything yourself
   #   hash[D::Ruby::NoMethod] = :information

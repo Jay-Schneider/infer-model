@@ -1,21 +1,15 @@
 # frozen_string_literal: true
 
 module InferModel
-  class Parsers::Integer
-    extend Callable
-    extend Dry::Initializer
-
-    param :value
-    option :allow_blank, default: -> { true }
+  class Parsers::Integer < Parsers::Parser
     option :base, default: -> { 10 }
 
     def call
-      raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
-      return if value.nil? || value.empty?
+      return if safe_value.empty?
 
-      Integer(value, base)
+      Integer(safe_value, base)
     rescue ArgumentError
-      raise Parsers::Error, "'#{value}' is not an Integer"
+      raise Parsers::Error, "'#{safe_value}' is not an Integer"
     end
   end
 end
