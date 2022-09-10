@@ -28,7 +28,11 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-A CLI is yet to be written. But you may run the tool from inside your code or an interactive session like so:
+A CLI is yet to be written. But you may run the tool from inside your code or an interactive session.
+
+### Inferring information from data
+
+Run code like the following:
 
 ```ruby
 require "infer_model"
@@ -41,6 +45,30 @@ InferModel.from(:csv, "path/to/file.csv", csv_options: { col_sep: ";", encoding:
 ```
 
 More "Adapters" that can be used as `from` source or `to` target may be added in the future. If you have ideas or needs please contribute by creating an issue or pr.
+
+### Importing data
+
+After generating a database table fitting to your data, you might want to fill them. You can use `InferModel`s parsers to do so. For example in your rails app, in an import service or seeds:
+
+```ruby
+now = Time.current
+column_types = MyModel.columns.to_h { |column| [column.name, column.type] }
+
+data = ::CSV.foreach("my_model_data.csv", col_sep: ";", encoding: "utf-8", headers: true, header_converters: :symbol).map do |row|
+    parsed_attributes = row.to_h.to_h do |column_name, value| # note the `to_h.to_h`: The first one turns the row into a hash, the second one allows building a new hash with the block. CSV::Row's #to_h method does not process the block properly.
+        column_type = column_types.fetch(column_name.to_s)
+        parser = InferModel::Parsers::BY_TYPE.fetch(column_type)
+        [column_name, parser.call(value)]
+    end
+    { created_at: now, updated_at: now }.merge(parsed_attributes)
+end
+
+MyModel.upsert_all(data) if data.present? # rubocop:disable Rails/SkipsModelValidations
+```
+
+That way you profit from the parsers logic that already generated your tables. For example the `Boolean` parser acknowledges `"Y"` as a _truthy_ value compared to `"N"` which is considered _falsey_. When you use a different parser or just attempt to insert the string value into your database, they will most likely all have `true` as value in the corresponding column just because `"N"` is considered truthy.
+
+For more information on how different parsers work, have a look inside their definition, e.g. the constants `InferModel::Parsers::Boolean::TRUTHY_VALUES_LOWERCASE` and `FALSEY_VALUES_LOWERCASE`. There might be the option to configure those values in the future.
 
 ## Development
 
