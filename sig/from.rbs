@@ -1,0 +1,25 @@
+module InferModel
+  module From
+    class CSV
+      extend Dry::Initializer
+
+      extend InferModel::Callable
+
+      DEFAULT_CSV_OPTIONS: Hash[Symbol, String | bool]
+
+      def call: () -> untyped
+
+      private
+
+      def source_name: () -> untyped
+
+      def attributes: () -> untyped
+
+      def csv: () -> untyped
+
+      def file_content: () -> untyped
+
+      def csv_options_with_defaults: () -> untyped
+    end
+  end
+end

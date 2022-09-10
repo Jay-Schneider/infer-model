@@ -8,7 +8,7 @@ module InferModel::From
     extend Dry::Initializer
     extend InferModel::Callable
 
-    DEFAULT_CSV_OPTIONS = { col_sep: ",", encoding: "utf-8", headers: true, quote_char: "\x00" }.freeze
+    DEFAULT_CSV_OPTIONS = { col_sep: ",", encoding: "utf-8", headers: true }.freeze
 
     param :filename
     option :available_types, default: -> { ::InferModel::ValueTypeGuesser::RESULT_TYPES }

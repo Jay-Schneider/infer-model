@@ -1,0 +1,41 @@
+module InferModel
+  module To
+    class Migration
+      extend Dry::Initializer
+
+      extend InferModel::Callable
+
+      TIMESTAMP_FORMAT: "%Y%m%d%H%M%S"
+
+      def call: () -> untyped
+
+      private
+
+      def migration_filename: () -> untyped
+
+      def given_or_inferred_tablename: () -> untyped
+
+      def migration_content: () -> ::String
+
+      COLUMN_DDL_LINES_WITH_INDENTATION_JOINER: ::String
+
+      def column_ddl_lines: () -> untyped
+    end
+
+    class Text
+      extend Dry::Initializer
+
+      extend InferModel::Callable
+
+      def call: () -> untyped
+
+      private
+
+      def title: () -> ::String
+
+      def formatted_attributes: () -> untyped
+
+      def formatted_attribute: (untyped attr_name, untyped common_type) -> untyped
+    end
+  end
+end

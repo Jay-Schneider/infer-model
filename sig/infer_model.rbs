@@ -1,4 +1,93 @@
 module InferModel
-  VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+  def from: (*untyped) -> Task
+  def to: (*untyped) -> Task
+
+  module Callable
+    def call: (*untyped) ?{ () -> untyped } -> untyped
+
+    alias call! call
+  end
+
+  class CommonType
+    extend Dry::Initializer
+
+    def detected_type: () -> untyped
+  end
+
+  class CommonTypeGuesser
+    extend InferModel::Callable
+
+    extend Dry::Initializer
+
+    def call: () -> untyped
+
+    private
+
+    def unique_constraint_possible: () -> (nil | untyped)
+
+    def non_null_constraint_possible: () -> (nil | untyped)
+  end
+
+  class Error < StandardError
+  end
+
+  class Model
+    extend Dry::Initializer
+
+    def initialize: (source_name: String, attributes: ::Hash[Symbol, untyped]) -> void
+  end
+
+  class Task
+    FROMS: { csv: untyped }
+
+    TOS: { migration: untyped, text: untyped }
+
+    attr_reader from_object: untyped
+
+    attr_reader from_args: untyped
+
+    attr_reader from_opts: untyped
+
+    attr_reader to_object: untyped
+
+    attr_reader to_args: untyped
+
+    attr_reader to_opts: untyped
+
+    def from: (untyped from_object, *untyped args, **untyped opts) -> self
+
+    def to: (untyped to_object, *untyped args, **untyped opts) -> self
+
+    def call: () -> untyped
+
+    def self.from: (*untyped) ?{ () -> untyped } -> untyped
+
+    def self.to: (*untyped) ?{ () -> untyped } -> untyped
+  end
+
+  class ValueTypeGuesser
+    extend InferModel::Callable
+
+    extend Dry::Initializer
+
+    INTEGER_RESULT: guessable_name
+    DECIMAL_RESULT: guessable_name
+    DATETIME_RESULT: guessable_name
+    TIME_RESULT: guessable_name
+    BOOLEAN_RESULT: guessable_name
+    JSON_RESULT: guessable_name
+    UUID_RESULT: guessable_name
+    STRING_RESULT: guessable_name
+    RESULT_TYPES: ::Array[guessable_name]
+
+    def call: () -> untyped
+
+    private
+
+    def ordered_available_known_types: () -> untyped
+
+    def may_be?: (untyped `type`) -> untyped
+  end
+
+  VERSION: "0.1.0"
 end

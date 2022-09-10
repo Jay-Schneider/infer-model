@@ -1,0 +1,6 @@
+module Dry
+  module Initializer
+    def param: (Symbol) -> void
+    def option: (Symbol, ?default: Proc, ?optional: bool]) -> void
+  end
+end
