@@ -2,7 +2,7 @@ module InferModel
   module Parsers
     Error: untyped
 
-    BY_TYPE: { boolean: untyped, datetime: untyped, decimal: untyped, integer: untyped, json: untyped, time: untyped, uuid: untyped, string: untyped }
+    BY_TYPE: ::Hash[::Symbol, untyped]
 
     class Parser
       extend InferModel::Callable
@@ -32,9 +32,9 @@ module InferModel
     end
 
     class Integer < Parser
-      attr_reader base: Integer
+      attr_reader base: ::Integer
 
-      def call: () -> untyped
+      def call: () -> ::Integer?
     end
 
     class JSON < Parser

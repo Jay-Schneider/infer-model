@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/hash/reverse_merge"
 require "csv"
 
 module InferModel::From
@@ -32,10 +31,8 @@ module InferModel::From
       end
     end
 
-    def csv = ::CSV.parse(file_content, **csv_options_with_defaults)
+    def csv = ::CSV.parse(file_content, **DEFAULT_CSV_OPTIONS.merge(csv_options))
 
     def file_content = File.read(filename)
-
-    def csv_options_with_defaults = csv_options.with_defaults(DEFAULT_CSV_OPTIONS)
   end
 end

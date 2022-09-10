@@ -26,6 +26,9 @@ module InferModel
       extend Dry::Initializer
       extend InferModel::Callable
 
+      attr_reader model: ::InferModel::Model
+      attr_reader outstream: ::IO
+
       def call: () -> untyped
 
       private
