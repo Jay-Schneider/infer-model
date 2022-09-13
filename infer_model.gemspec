@@ -38,6 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "zeitwerk", "~> 2.6"
   spec.add_development_dependency "dotenv", "~> 2.8"
   spec.add_development_dependency "pry", "~> 0.14"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.11"
   spec.add_development_dependency "rubocop", "~> 1.36"
   spec.add_development_dependency "rubocop-performance", "~> 1.14"
