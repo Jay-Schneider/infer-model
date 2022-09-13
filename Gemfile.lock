@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    infer_model (0.1.0)
+    infer_model (0.1.1)
       activesupport (~> 7.0)
       dry-initializer (~> 3.0)
       zeitwerk (~> 2.6)
