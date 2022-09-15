@@ -3,10 +3,7 @@
 require "date"
 
 module InferModel
-  class Parsers::DateTime
-    extend Callable
-    extend Dry::Initializer
-
+  class Parsers::DateTime < Parsers::Parser
     ACCEPTABLE_DATETIME_FORMATS = [
       "%Y-%m-%dT%T%z",
       "%Y-%m-%dT%T%Z",
@@ -20,20 +17,16 @@ module InferModel
       "%d.%m.%Y",
     ].freeze
 
-    param :value
-    option :allow_blank, default: -> { true }
-
     def call
-      raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
-      return if value.nil? || value.empty?
+      return if safe_value.empty?
 
       ACCEPTABLE_DATETIME_FORMATS.each do |format|
-        return DateTime.strptime(value, format)
-      rescue Date::Error
+        return ::DateTime.strptime(safe_value, format)
+      rescue ::Date::Error
         next
       end
 
-      raise Parsers::Error, "'#{value}' is not a DateTime"
+      raise Parsers::Error, "'#{safe_value}' is not a DateTime"
     end
   end
 end

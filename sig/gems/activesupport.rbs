@@ -1,0 +1,3 @@
+class String
+  def pluralize: () -> String
+end

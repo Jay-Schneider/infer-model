@@ -3,20 +3,13 @@
 require "json"
 
 module InferModel
-  class Parsers::JSON
-    extend Callable
-    extend Dry::Initializer
-
-    param :value
-    option :allow_blank, default: -> { true }
-
+  class Parsers::JSON < Parsers::Parser
     def call
-      raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
-      return if value.nil? || value.empty?
+      return if safe_value.empty?
 
-      JSON.parse(value)
-    rescue JSON::ParserError
-      raise Parsers::Error, "'#{value}' is not a JSON"
+      ::JSON.parse(safe_value)
+    rescue ::JSON::ParserError
+      raise Parsers::Error, "'#{safe_value}' is not a JSON"
     end
   end
 end

@@ -8,6 +8,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  bundle_audit:
+      name: Bundle Audit
+      runs-on: ubuntu-22.04
+      steps:
+        - uses: actions/checkout@v3
+        - uses: ruby/setup-ruby@v1
+        - run: gem install bundler-audit
+        - run: bundle audit check --update
+
   rspec:
     name: RSpec
     runs-on: ubuntu-22.04
@@ -27,15 +36,6 @@ jobs:
       - run: gem install rubocop rubocop-performance
       - run: rubocop -P
 
-  bundle_audit:
-    name: Bundle Audit
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ruby/setup-ruby@v1
-      - run: gem install bundler-audit
-      - run: bundle audit check --update
-
   ruby_audit:
     name: Ruby Audit
     runs-on: ubuntu-22.04
@@ -44,3 +44,12 @@ jobs:
       - uses: ruby/setup-ruby@v1
       - run: gem install ruby_audit
       - run: bin/ruby-audit
+
+  typecheck:
+    name:  Steep typecheck
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+      - run: gem install steep
+      - run: steep check --severity-level=error

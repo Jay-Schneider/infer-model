@@ -1,4 +1,100 @@
 module InferModel
+  def from: (*untyped) -> Task
+  def to: (*untyped) -> Task
+
+  module Callable
+    def call: (*untyped) ?{ () -> untyped } -> untyped
+
+    alias call! call
+  end
+
+  class CommonType
+    extend Dry::Initializer
+
+    attr_reader possible_detected_types: ::Array[guessable_name]
+    attr_reader unique_constraint_possible: bool
+    attr_reader non_null_constraint_possible: bool
+
+    def initialize: (::Array[guessable_name] | guessable_name?, unique_constraint_possible: bool, non_null_constraint_possible: bool) -> void
+    def detected_type: () -> untyped
+  end
+
+  class CommonTypeGuesser
+    extend InferModel::Callable
+    extend Dry::Initializer
+
+    attr_reader inputs: ::Array[::String]
+    attr_reader available_types: ::Array[guessable_name]
+    attr_reader multi: bool
+    attr_reader allow_blank: bool
+    attr_reader detect_uniqueness: bool
+    attr_reader detect_non_null: bool
+    @parsed_inputs: ::Array[guessable_class]
+
+    def call: () -> untyped
+
+    private
+
+    def unique_constraint_possible: () -> (nil | untyped)
+    def non_null_constraint_possible: () -> (nil | untyped)
+  end
+
+  class Error < StandardError
+  end
+
+  class Model
+    extend Dry::Initializer
+
+    attr_reader source_name: String
+    attr_reader attributes: Hash[Symbol, CommonType]
+
+    def initialize: (source_name: String, attributes: ::Hash[Symbol, CommonType]) -> void
+  end
+
+  class Task
+    FROMS: ::Hash[::Symbol, singleton(::InferModel::From::CSV)]
+    TOS: ::Hash[::Symbol, singleton(::InferModel::To::Text) | singleton(::InferModel::To::Migration)]
+
+    attr_reader from_object: untyped
+    attr_reader from_args: untyped
+    attr_reader from_opts: untyped
+    attr_reader to_object: untyped
+    attr_reader to_args: untyped
+    attr_reader to_opts: untyped
+
+    def from: (untyped from_object, *untyped args, **untyped opts) -> self
+    def to: (untyped to_object, *untyped args, **untyped opts) -> self
+    def call: () -> untyped
+    def self.from: (*untyped) ?{ () -> untyped } -> untyped
+    def self.to: (*untyped) ?{ () -> untyped } -> untyped
+  end
+
+  class ValueTypeGuesser
+    extend InferModel::Callable
+    extend Dry::Initializer
+
+    attr_reader input: String?
+    attr_reader available_types: ::Array[guessable_name]
+    attr_reader multi: bool
+    attr_reader allow_blank: bool
+
+    INTEGER_RESULT: guessable_name
+    DECIMAL_RESULT: guessable_name
+    DATETIME_RESULT: guessable_name
+    TIME_RESULT: guessable_name
+    BOOLEAN_RESULT: guessable_name
+    JSON_RESULT: guessable_name
+    UUID_RESULT: guessable_name
+    STRING_RESULT: guessable_name
+    RESULT_TYPES: ::Array[guessable_name]
+
+    def call: () -> untyped
+
+    private
+
+    def ordered_available_known_types: () -> untyped
+    def may_be?: (untyped `type`) -> untyped
+  end
+
   VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
 end

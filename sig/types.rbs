@@ -1,0 +1,2 @@
+type guessable_name = :integer | :decimal | :datetime | :time | :boolean | :json | :uuid | :string
+type guessable_class = Integer | Float | DateTime | Time | bool | String

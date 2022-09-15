@@ -1,0 +1,56 @@
+module InferModel
+  module Parsers
+    Error: untyped
+
+    BY_TYPE: ::Hash[::Symbol, untyped]
+
+    class Parser
+      extend InferModel::Callable
+      extend Dry::Initializer
+
+      def value: () -> ::String?
+      def allow_blank: () -> bool
+      private
+      def safe_value: () -> String
+    end
+
+    class Boolean < Parser
+      TRUTHY_VALUES_LOWERCASE: ::Array[::String]
+      FALSEY_VALUES_LOWERCASE: ::Array[::String]
+
+      def call: () -> (nil | false | true | untyped)
+    end
+
+    class DateTime < Parser
+      ACCEPTABLE_DATETIME_FORMATS: ::Array[::String]
+
+      def call: () -> (nil | untyped)
+    end
+
+    class Decimal < Parser
+      def call: () -> untyped
+    end
+
+    class Integer < Parser
+      attr_reader base: ::Integer
+
+      def call: () -> ::Integer?
+    end
+
+    class JSON < Parser
+      def call: () -> untyped
+    end
+
+    class Time < Parser
+      ACCEPTABLE_TIME_FORMATS: ::Array[::String]
+
+      def call: () -> (nil | untyped)
+    end
+
+    class UUID < Parser
+      UUID_REGEX: ::Regexp
+
+      def call: () -> (nil | untyped)
+    end
+  end
+end

@@ -1,20 +1,13 @@
 # frozen_string_literal: true
 
 module InferModel
-  class Parsers::Decimal
-    extend Callable
-    extend Dry::Initializer
-
-    param :value
-    option :allow_blank, default: -> { true }
-
+  class Parsers::Decimal < Parsers::Parser
     def call
-      raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
-      return if value.nil? || value.empty?
+      return if safe_value.empty?
 
-      Float(value)
+      Float(safe_value)
     rescue ArgumentError
-      raise Parsers::Error, "'#{value}' is not a Decimal"
+      raise Parsers::Error, "'#{safe_value}' is not a Decimal"
     end
   end
 end
