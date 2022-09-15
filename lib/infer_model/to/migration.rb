@@ -10,9 +10,11 @@ module InferModel::To
     TIMESTAMP_FORMAT = "%Y%m%d%H%M%S"
 
     param :model
-    option :target_dir, default: -> { "db/migrate" }
-    option :table_name, optional: true
+    option :attributes_map, optional: true
+    option :filter_on_attribute_mapping, default: -> { true }
     option :rails_version, default: -> { "7.0" }
+    option :table_name, optional: true
+    option :target_dir, default: -> { "db/migrate" }
 
     def call
       FileUtils.mkdir_p(target_dir)
@@ -28,6 +30,16 @@ module InferModel::To
 
     def given_or_inferred_tablename
       table_name || model.source_name.pluralize
+    end
+
+    def given_or_mapped_attributes
+      return model.attributes unless attributes_map
+
+      if filter_on_attribute_mapping
+        attributes_map.to_h { |old_key, new_key| [new_key, model.attributes[old_key]] }
+      else
+        model.attributes.transform_keys { |key| attributes_map.fetch(key, key) }
+      end
     end
 
     def migration_content
@@ -49,13 +61,13 @@ module InferModel::To
     COLUMN_DDL_LINES_WITH_INDENTATION_JOINER = "\n#{"  " * 3}".freeze
 
     def column_ddl_lines
-      column_definitions = model.attributes.map do |key, common_type|
+      column_definitions = given_or_mapped_attributes.map do |key, common_type|
         attribute_and_name = %(t.#{common_type.detected_type} "#{key}")
         non_null_constraint = common_type.non_null_constraint_possible ? "null: false" : nil
 
         [attribute_and_name, non_null_constraint].compact.join(", ")
       end
-      index_definitions = model.attributes.filter_map do |key, common_type|
+      index_definitions = given_or_mapped_attributes.filter_map do |key, common_type|
         next unless common_type.unique_constraint_possible
 
         %(t.index ["#{key}"], unique: true)

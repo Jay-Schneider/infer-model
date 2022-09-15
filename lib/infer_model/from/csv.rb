@@ -13,6 +13,7 @@ module InferModel::From
     param :filename
     option :available_types, default: -> { ::InferModel::ValueTypeGuesser::RESULT_TYPES }
     option :multi, default: -> { false }
+    option :rename_attributes, optional: true
     option :csv_options, default: -> { {} }
 
     def call
@@ -26,10 +27,17 @@ module InferModel::From
     def attributes
       csv.by_col!.to_h do |header, contents|
         [
-          header.downcase.to_sym,
+          transform_header(header),
           ::InferModel::CommonTypeGuesser.call(contents, available_types:),
         ]
       end
+    end
+
+    def transform_header(header)
+      header = header.downcase.to_sym
+      return header unless rename_attributes
+
+      rename_attributes.to_proc.call(header) || header
     end
 
     def csv = ::CSV.parse(file_content, **csv_options_with_defaults)
