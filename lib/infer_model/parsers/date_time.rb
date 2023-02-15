@@ -22,11 +22,20 @@ module InferModel
 
     param :value
     option :allow_blank, default: -> { true }
+    option :time_zone_offset, default: -> { "+00:00" }
 
     def call
       raise Parsers::Error, "value was blank which is not allowed" if value.nil? && !allow_blank
       return if value.nil? || value.empty?
 
+      datetime_without_zone = parsed_datetime.iso8601[..-7]
+      datetime_with_custom_zone = datetime_without_zone + time_zone_offset
+      DateTime.parse(datetime_with_custom_zone)
+    end
+
+    private
+
+    def parsed_datetime
       ACCEPTABLE_DATETIME_FORMATS.each do |format|
         return DateTime.strptime(value, format)
       rescue Date::Error
