@@ -10,6 +10,8 @@ AllCops:
     - doc/**/*
     - node_modules/**/*
   NewCops: enable
+  TargetRubyVersion: 3.1
+
 
 ###
 
